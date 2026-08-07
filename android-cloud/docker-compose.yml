@@ -1,0 +1,53 @@
+version: "3.8"
+
+# Cloud Android VM streamed to any browser (including iPhone Safari).
+# Nothing runs on the iPhone itself, so there is nothing for an iOS
+# update to break — the phone only ever opens a webpage.
+#
+# redroid  = Android running as a container on the host's Linux kernel
+#            (needs the host's binder/ashmem kernel modules — see README).
+# ws-scrcpy = browser-based screen mirror + touch/keyboard input for redroid,
+#             served over HTTP(S) and viewable in Mobile Safari.
+# nginx    = terminates TLS so Safari gets a proper https:// origin.
+
+services:
+  redroid:
+    image: redroid/redroid:13.0.0-latest
+    privileged: true
+    devices:
+      - /dev/kvm
+    volumes:
+      - redroid-data:/data
+    ports:
+      - "5555:5555" # adb
+    command:
+      - androidboot.redroid_gpu_mode=guest
+      - androidboot.redroid_width=1080
+      - androidboot.redroid_height=1920
+      - androidboot.redroid_dpi=320
+    restart: unless-stopped
+
+  ws-scrcpy:
+    image: ghcr.io/netris/ws-scrcpy:latest
+    depends_on:
+      - redroid
+    environment:
+      - WS_SCRCPY_ADB_HOST=redroid
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - ws-scrcpy
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    ports:
+      - "443:443"
+      - "80:80"
+    restart: unless-stopped
+
+volumes:
+  redroid-data:
