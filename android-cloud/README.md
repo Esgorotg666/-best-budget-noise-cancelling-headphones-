@@ -71,6 +71,15 @@ Once connected:
   personal use is common practice. This repo intentionally does not
   ship a GApps image for you.
 
+## Remote control from your iPhone (a-Shell)
+
+[`game-ops/`](game-ops/) has scripts to start/stop/status-check the VM
+and install/uninstall APKs, meant to be run from
+[a-Shell](https://apps.apple.com/app/a-shell/id1473805438) on your
+iPhone — so you can boot this whole rig from your lock screen instead of
+SSHing in from a laptop every time. See
+[`game-ops/README.md`](game-ops/README.md) for setup.
+
 ## Scaling to more than one user
 
 This compose file runs one Android VM. For multiple simultaneous users

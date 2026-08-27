@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ocean Arcade – Retro Arcade</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#030b1a;--card:#060f22;--cyan:#00d4ff;--gold:#ffd700;
+  --orange:#ff6b35;--green:#00ff88;--red:#ff3355;
+}
+body{background:var(--bg);color:#fff;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh}
+header{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 18px;background:rgba(3,11,26,.97);
+  border-bottom:2px solid rgba(0,212,255,.4);position:sticky;top:0;z-index:10;
+}
+.logo-text{
+  font-size:1.4em;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.back-link{
+  color:var(--cyan);text-decoration:none;font-size:.85em;font-weight:600;
+  border:1px solid rgba(0,212,255,.4);border-radius:16px;padding:6px 14px;white-space:nowrap;
+}
+.back-link:hover{background:rgba(0,212,255,.12)}
+
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+.panel{
+  background:var(--card);border:1px solid #1a2a40;border-radius:16px;
+  padding:20px;margin-bottom:16px;
+}
+.panel h2{font-size:1.1em;margin-bottom:10px;color:var(--gold)}
+.panel p{font-size:.86em;color:#9ab;line-height:1.5;margin-bottom:8px}
+.legal-note{
+  border:1px solid rgba(255,215,0,.35);background:rgba(255,215,0,.06);
+  border-radius:12px;padding:12px 14px;font-size:.8em;color:#ffe9a8;line-height:1.5;
+}
+
+label{display:block;font-size:.78em;color:#88aacc;letter-spacing:1px;margin:14px 0 6px;text-transform:uppercase}
+select,input[type=file]{
+  width:100%;background:#0a1830;border:1.5px solid #1a2a40;color:#fff;
+  border-radius:10px;padding:10px 12px;font-size:.9em;
+}
+select:focus,input[type=file]:focus{outline:none;border-color:var(--cyan)}
+
+.play-btn{
+  margin-top:18px;width:100%;padding:13px;border:none;border-radius:24px;
+  background:linear-gradient(90deg,var(--cyan),var(--green));color:#012;
+  font-weight:800;font-size:1em;letter-spacing:1px;cursor:pointer;transition:.15s;
+}
+.play-btn:hover{filter:brightness(1.1)}
+.play-btn:disabled{background:#333;color:#666;cursor:not-allowed;filter:none}
+
+#emuWrap{display:none;margin-top:8px}
+#game{width:100%;aspect-ratio:4/3;background:#000;border-radius:12px;overflow:hidden}
+#stopBtn{
+  margin-top:10px;width:100%;padding:10px;border:1px solid var(--red);
+  background:rgba(255,51,85,.1);color:var(--red);border-radius:20px;
+  font-weight:700;cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-text">🕹️ RETRO ARCADE</div>
+  <a href="index.html" class="back-link">🏠 Back to Ocean Arcade</a>
+</header>
+
+<main>
+  <div class="panel">
+    <h2>Bring Your Own ROM</h2>
+    <p>This plays game files entirely in your browser — nothing is uploaded to any server. Pick the console your file is for, choose the ROM from your device (Files app / iCloud Drive works fine on iPhone), then hit Play.</p>
+    <div class="legal-note">
+      ⚠️ Only load ROM files you legally own or have dumped yourself from cartridges/discs you own. This page doesn't include, link to, or host any game files — you supply your own.
+    </div>
+  </div>
+
+  <div class="panel">
+    <label for="coreSelect">Console</label>
+    <select id="coreSelect">
+      <option value="nes">Nintendo (NES)</option>
+      <option value="snes">Super Nintendo (SNES)</option>
+      <option value="gb">Game Boy / Color</option>
+      <option value="gba">Game Boy Advance</option>
+      <option value="segaMD">Sega Genesis / Mega Drive</option>
+      <option value="segaGG">Sega Game Gear</option>
+    </select>
+
+    <label for="romFile">ROM File</label>
+    <input type="file" id="romFile" accept=".nes,.snes,.sfc,.smc,.gb,.gbc,.gba,.md,.gen,.bin,.zip">
+
+    <button class="play-btn" id="playBtn" disabled>▶ Play</button>
+  </div>
+
+  <div id="emuWrap">
+    <div id="game"></div>
+    <button id="stopBtn">■ Stop &amp; Choose Another Game</button>
+  </div>
+</main>
+
+<script>
+const coreSelect = document.getElementById('coreSelect');
+const romFile = document.getElementById('romFile');
+const playBtn = document.getElementById('playBtn');
+const emuWrap = document.getElementById('emuWrap');
+const stopBtn = document.getElementById('stopBtn');
+const gameDiv = document.getElementById('game');
+
+romFile.addEventListener('change', () => {
+  playBtn.disabled = !romFile.files.length;
+});
+
+playBtn.addEventListener('click', () => {
+  const file = romFile.files[0];
+  if (!file) return;
+
+  document.querySelector('main > .panel:nth-of-type(2)').style.display = 'none';
+  document.querySelector('main > .panel:nth-of-type(1)').style.display = 'none';
+  emuWrap.style.display = 'block';
+
+  window.EJS_player = '#game';
+  window.EJS_core = coreSelect.value;
+  window.EJS_gameUrl = file;
+  window.EJS_gameName = file.name;
+  window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+  window.EJS_startOnLoaded = true;
+
+  const loader = document.createElement('script');
+  loader.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+  document.body.appendChild(loader);
+});
+
+stopBtn.addEventListener('click', () => {
+  location.reload();
+});
+</script>
+
+</body>
+</html>

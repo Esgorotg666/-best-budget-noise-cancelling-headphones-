@@ -1,0 +1,8 @@
+# Copy this file to config.sh and fill in your own values.
+# config.sh is gitignored — never commit your real server details.
+
+GAMEOPS_HOST="android.yourdomain.com"   # server from the main android-cloud README
+GAMEOPS_USER="youruser"                 # ssh user on that server
+GAMEOPS_SSH_KEY="$HOME/.ssh/id_ed25519" # key a-Shell's ssh-keygen generated
+GAMEOPS_COMPOSE_DIR="~/OceanArcade/android-cloud"
+GAMEOPS_ADB_PORT="5555"

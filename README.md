@@ -30,6 +30,9 @@ Access via: `fish.html?room=deep`
 - Auto-spin (10 / 25 / 50 / 100 rounds)
 - VIP points earned on wins
 
+### 🕹️ Retro Arcade
+Bring-your-own-ROM emulator (NES / SNES / Game Boy / GBA / Genesis / Game Gear) powered by [EmulatorJS](https://emulatorjs.org/), running entirely client-side in your browser — nothing is uploaded anywhere. You supply your own legally-owned ROM files. See `retro.html`.
+
 ---
 
 ## 🌐 Play Online
@@ -40,6 +43,7 @@ Access via: `fish.html?room=deep`
 | 🐟 Fish Shooting | `https://esgorotg666.github.io/OceanArcade/fish.html` |
 | 🌊 Deep Sea Hunter | `https://esgorotg666.github.io/OceanArcade/fish.html?room=deep` |
 | 🎰 Lucky Slots | `https://esgorotg666.github.io/OceanArcade/slots.html` |
+| 🕹️ Retro Arcade | `https://esgorotg666.github.io/OceanArcade/retro.html` |
 
 ---
 
@@ -88,3 +92,14 @@ All games share a single coin wallet stored in `localStorage`. Coins earned in F
 - **Web Audio API** for all sound effects (no audio files)
 - **CSS transitions** with `cubic-bezier` for slot reel animation
 - **localStorage** for persistent wallet, VIP, streak, and jackpot data
+
+---
+
+## ☁️ Android Cloud VM (optional, separate project)
+
+`android-cloud/` contains a self-hosted setup for streaming a real
+Android VM (with sideloadable APKs) to any browser, including iPhone
+Safari — plus `game-ops/`, a set of scripts for controlling that VM
+from [a-Shell](https://apps.apple.com/app/a-shell/id1473805438) on your
+phone. This is unrelated to the arcade games above and requires your
+own Linux server. See `android-cloud/README.md` for details.
